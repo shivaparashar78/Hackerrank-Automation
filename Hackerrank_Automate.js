@@ -1,5 +1,7 @@
 //node Hackerrank_Automate.js --url=https://www.hackerrank.com --config=config.json
 
+//config file contains moderators name and UserId , Password for Login
+
 let minimist = require("minimist");
 let puppeteer = require("puppeteer");
 let fs = require("fs");
@@ -49,20 +51,27 @@ let configJSO = JSON.parse(configJSON);
     // press click on page3
     await page.waitForSelector("button[data-analytics='LoginPassword']");
     await page.click("button[data-analytics='LoginPassword']");
+    
+    await page.waitForTimeout(2000);
 
     // click on compete
     await page.waitForSelector("a[data-analytics='NavBarContests']");
     await page.click("a[data-analytics='NavBarContests']");
 
+    await page.waitForTimeout(2000);
+
     // click on manage contests
     await page.waitForSelector("a[href='/administration/contests/']");
     await page.click("a[href='/administration/contests/']");
+    
+    await page.waitForTimeout(2000);
 
     await page.waitForSelector("a[data-attr1='Last']");
     let numberOfPages = await page.$eval("a[data-attr1='Last']", function(alast){
         let countOfPages = parseInt(alast.getAttribute("data-page"));
         return countOfPages;
     })
+   await page.waitForTimeout(2000);
 
     for(let i = 0; i < numberOfPages - 1; i++){
         await page.waitForSelector("a.backbone.block-center");
@@ -75,7 +84,7 @@ let configJSO = JSON.parse(configJSON);
             }
             return urls;
         });
-        
+        await page.waitForTimeout(2000);
         for (let i = 0; i < contestUrls.length; i++) {
             let cpage = await browser.newPage();
             
@@ -107,20 +116,5 @@ async function saveModerator(url, cpage, moderator) {
         await  cpage.type("input#moderator" , configJSO.moderators[i] , {delay:100});
         await  cpage.keyboard.press("Enter");
     }
-    // // type in moderator
-    // await cpage.waitForSelector("input#moderator");
-    // await cpage.type("input#moderator", moderator, { delay: 20 });
-
     await cpage.keyboard.press("Enter");
 };
-
-
-
-
-
-
-
-//Hello world
-//So , What this project does?
-//It automates on hacekrarank to  add multiple modeartors in multiple contests
-//Let's see how it works
